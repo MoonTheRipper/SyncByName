@@ -11,16 +11,29 @@ final class AppController: ObservableObject {
     @Published var caseSensitiveFilenames: Bool
     @Published var ignoreHiddenFiles: Bool
     @Published var preserveSourceFolders: Bool
+    @Published var automaticallyCheckForUpdates: Bool
     @Published private(set) var plan: SyncPlan?
     @Published private(set) var statusMessage = "Select folders to start a filename-only scan."
     @Published private(set) var isBusy = false
     @Published private(set) var shouldPresentInitialWelcome: Bool
+    @Published private(set) var isCheckingForUpdates = false
+    @Published private(set) var isDownloadingUpdate = false
+    @Published private(set) var availableUpdate: AppUpdateInfo?
+    @Published private(set) var lastDownloadedUpdateURL: URL?
 
     private let settingsStore: AppSettingsStore
+    private let updateService: UpdateService
     private var hasSeenWelcome: Bool
+    private var lastUpdateCheckAt: Date?
+    private let currentVersion = AppRuntimeInfo.currentVersion()
+    private var started = false
 
-    init(settingsStore: AppSettingsStore = AppSettingsStore()) {
+    init(
+        settingsStore: AppSettingsStore = AppSettingsStore(),
+        updateService: UpdateService = UpdateService()
+    ) {
         self.settingsStore = settingsStore
+        self.updateService = updateService
         let snapshot = settingsStore.load()
         sourceRoots = snapshot.sourcePaths.map(URL.init(fileURLWithPath:))
         comparisonRoots = snapshot.comparisonPaths.map(URL.init(fileURLWithPath:))
@@ -30,7 +43,34 @@ final class AppController: ObservableObject {
         ignoreHiddenFiles = snapshot.ignoreHiddenFiles
         preserveSourceFolders = snapshot.preserveSourceFolders
         hasSeenWelcome = snapshot.hasSeenWelcome
+        automaticallyCheckForUpdates = snapshot.automaticallyCheckForUpdates
+        lastUpdateCheckAt = snapshot.lastUpdateCheckAt
         shouldPresentInitialWelcome = !snapshot.hasSeenWelcome
+    }
+
+    var currentVersionDisplay: String {
+        currentVersion
+    }
+
+    var lastUpdateCheckDescription: String {
+        guard let lastUpdateCheckAt else {
+            return "Not checked yet"
+        }
+
+        return lastUpdateCheckAt.formatted(date: .abbreviated, time: .shortened)
+    }
+
+    func start() {
+        guard !started else {
+            return
+        }
+        started = true
+
+        if automaticallyCheckForUpdates {
+            Task {
+                await checkForUpdates(manuallyInitiated: false)
+            }
+        }
     }
 
     func addSourceRoots() {
@@ -162,6 +202,11 @@ final class AppController: ObservableObject {
         persist()
     }
 
+    func updateAutomaticallyCheckForUpdates(_ value: Bool) {
+        automaticallyCheckForUpdates = value
+        persist()
+    }
+
     func consumeInitialWelcomeRequest() -> Bool {
         guard shouldPresentInitialWelcome else {
             return false
@@ -196,6 +241,82 @@ final class AppController: ObservableObject {
 
     func openFeedbackPage() {
         NSWorkspace.shared.open(SyncByNameIdentity.repository.issuesURL)
+    }
+
+    func openReleasesPage() {
+        NSWorkspace.shared.open(SyncByNameIdentity.repository.latestReleasePageURL)
+    }
+
+    func openAvailableReleaseNotes() {
+        if let availableUpdate {
+            NSWorkspace.shared.open(availableUpdate.release.htmlURL)
+        } else {
+            openReleasesPage()
+        }
+    }
+
+    func checkForUpdates(manuallyInitiated: Bool) async {
+        guard !isCheckingForUpdates else {
+            return
+        }
+
+        isCheckingForUpdates = true
+        defer { isCheckingForUpdates = false }
+
+        do {
+            let update = try await updateService.checkForUpdate(currentVersion: currentVersion)
+            availableUpdate = update
+            lastUpdateCheckAt = Date()
+            persist()
+
+            if let update {
+                statusMessage = "Update \(update.release.tagName) is available."
+            } else if manuallyInitiated {
+                statusMessage = "Sync by Name is up to date."
+            }
+        } catch {
+            if manuallyInitiated {
+                statusMessage = "Update check failed: \(error.localizedDescription)"
+            }
+        }
+    }
+
+    func downloadLatestRelease() async {
+        guard !isDownloadingUpdate else {
+            return
+        }
+
+        isDownloadingUpdate = true
+        defer { isDownloadingUpdate = false }
+
+        do {
+            let release: AppRelease
+            if let availableUpdate {
+                release = availableUpdate.release
+            } else {
+                release = try await updateService.latestRelease()
+                let preferredAsset = await updateService.preferredAsset(for: release)
+                let latestInfo = AppUpdateInfo(
+                    currentVersion: currentVersion,
+                    release: release,
+                    preferredAsset: preferredAsset
+                )
+                availableUpdate = latestInfo.isNewerThanCurrentVersion ? latestInfo : nil
+                lastUpdateCheckAt = Date()
+                persist()
+            }
+
+            let downloadedURL = try await updateService.downloadPreferredAsset(for: release)
+            lastDownloadedUpdateURL = downloadedURL
+            statusMessage = "Downloaded \(downloadedURL.lastPathComponent) from GitHub Releases."
+
+            NSWorkspace.shared.activateFileViewerSelecting([downloadedURL])
+            if downloadedURL.pathExtension.lowercased() == "dmg" {
+                NSWorkspace.shared.open(downloadedURL)
+            }
+        } catch {
+            statusMessage = "Update download failed: \(error.localizedDescription)"
+        }
     }
 
     func hideToTopBar() {
@@ -252,7 +373,9 @@ final class AppController: ObservableObject {
                 caseSensitiveFilenames: caseSensitiveFilenames,
                 ignoreHiddenFiles: ignoreHiddenFiles,
                 preserveSourceFolders: preserveSourceFolders,
-                hasSeenWelcome: hasSeenWelcome
+                hasSeenWelcome: hasSeenWelcome,
+                automaticallyCheckForUpdates: automaticallyCheckForUpdates,
+                lastUpdateCheckAt: lastUpdateCheckAt
             )
         )
     }

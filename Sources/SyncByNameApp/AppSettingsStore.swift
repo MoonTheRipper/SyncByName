@@ -9,6 +9,8 @@ struct AppSettingsSnapshot: Codable {
     var ignoreHiddenFiles = true
     var preserveSourceFolders = true
     var hasSeenWelcome = false
+    var automaticallyCheckForUpdates = true
+    var lastUpdateCheckAt: Date?
 }
 
 @MainActor

@@ -61,6 +61,15 @@ struct MainView: View {
                 }
 
                 Button {
+                    openWindow(id: "updates")
+                } label: {
+                    Label(
+                        controller.availableUpdate == nil ? "Updates" : "Update Available",
+                        systemImage: controller.availableUpdate == nil ? "arrow.down.circle" : "arrow.down.circle.fill"
+                    )
+                }
+
+                Button {
                     controller.hideToTopBar()
                 } label: {
                     Label("Hide to Top Bar", systemImage: "menubar.rectangle")

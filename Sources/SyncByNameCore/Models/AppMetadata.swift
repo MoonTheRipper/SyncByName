@@ -17,6 +17,14 @@ public struct GitHubRepository: Hashable, Sendable {
         URL(string: "https://api.github.com/repos/\(owner)/\(name)/releases/latest")!
     }
 
+    public var releasesURL: URL {
+        repositoryURL.appending(path: "releases")
+    }
+
+    public var latestReleasePageURL: URL {
+        repositoryURL.appending(path: "releases/latest")
+    }
+
     public var issuesURL: URL {
         repositoryURL.appending(path: "issues")
     }
@@ -32,7 +40,7 @@ public enum SyncByNameIdentity {
     public static let bundleIdentifier = "com.moontheripper.SyncByName"
     public static let repository = GitHubRepository(owner: "MoonTheRipper", name: "SyncByName")
     public static let supportURL = URL(string: "https://ko-fi.com/I2I61WTJ6V")!
-    public static let defaultVersion = "0.2.1"
+    public static let defaultVersion = "0.3.0"
 }
 
 public enum AppRuntimeInfo {

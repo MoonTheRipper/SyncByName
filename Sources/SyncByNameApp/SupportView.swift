@@ -46,6 +46,31 @@ struct SupportView: View {
                 Text("Current release: \(AppRuntimeInfo.currentVersion())")
                     .foregroundStyle(.secondary)
             }
+
+            SupportCard(title: "Updates", symbol: "arrow.down.circle.fill") {
+                Text(controller.availableUpdate == nil
+                    ? "No newer release is currently available."
+                    : "\(controller.availableUpdate!.release.displayName) is available to download.")
+                    .foregroundStyle(.secondary)
+
+                HStack(spacing: 12) {
+                    Button(controller.isCheckingForUpdates ? "Checking…" : "Check Now") {
+                        Task {
+                            await controller.checkForUpdates(manuallyInitiated: true)
+                        }
+                    }
+                    .buttonStyle(.bordered)
+                    .disabled(controller.isCheckingForUpdates)
+
+                    Button(controller.isDownloadingUpdate ? "Downloading…" : "Download Latest Release") {
+                        Task {
+                            await controller.downloadLatestRelease()
+                        }
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .disabled(controller.isDownloadingUpdate)
+                }
+            }
         }
         .padding(28)
         .frame(minWidth: 720, minHeight: 520)
