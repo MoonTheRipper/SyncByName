@@ -23,11 +23,15 @@ Most sync tools optimize for mirroring trees. Sync by Name optimizes for filenam
 - multiple source folders
 - multiple comparison folders
 - recursive scanning
-- case-insensitive filename matching
+- case-sensitive or case-insensitive filename matching
+- hidden-file scan toggle
 - extension filtering
 - preview of missing files with size and source path details
 - copy plan execution into a chosen output folder
 - optional preservation of source-root folder structure
+- one-time welcome window with quick-start guidance
+- dedicated Tutorials & Help and Support & Feedback windows
+- menu bar extra for reopen, hide-to-top-bar, donate, and quit actions
 
 ## Build
 
@@ -52,7 +56,7 @@ DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer \
 ## Package A Release Build
 
 ```bash
-./Scripts/package-release.sh
+zsh Scripts/package-release.sh
 ```
 
 This creates ZIP and DMG artifacts in `docs/downloads/`.

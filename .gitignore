@@ -1,4 +1,5 @@
 .DS_Store
 .build/
+.swiftpm/
 docs/downloads/*.zip
 docs/downloads/*.dmg

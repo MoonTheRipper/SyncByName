@@ -3,6 +3,7 @@ import SyncByNameCore
 
 struct MainView: View {
     @ObservedObject var controller: AppController
+    @Environment(\.openWindow) private var openWindow
 
     var body: some View {
         ScrollView {
@@ -16,17 +17,55 @@ struct MainView: View {
         }
         .frame(minWidth: 980, minHeight: 760)
         .background(Color(nsColor: .windowBackgroundColor))
+        .task {
+            if controller.consumeInitialWelcomeRequest() {
+                openWindow(id: "welcome")
+            }
+        }
     }
 
     private var header: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Label("Sync by Name", systemImage: "arrow.triangle.branch")
-                .font(.system(size: 28, weight: .semibold))
-            Text("Compare folders and drives by filename only, preview the missing files, and copy those files into a chosen output folder.")
-                .foregroundStyle(.secondary)
-            Text(controller.statusMessage)
-                .font(.callout)
-                .foregroundStyle(.secondary)
+        VStack(alignment: .leading, spacing: 14) {
+            HStack(alignment: .center, spacing: 16) {
+                BrandIconView()
+                    .frame(width: 68, height: 68)
+
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Sync by Name")
+                        .font(.system(size: 30, weight: .bold))
+                    Text("Compare folders and drives by filename only, preview the missing files, and copy those files into a chosen output folder.")
+                        .foregroundStyle(.secondary)
+                    Text(controller.statusMessage)
+                        .font(.callout)
+                        .foregroundStyle(.secondary)
+                }
+            }
+
+            HStack(spacing: 12) {
+                Button {
+                    openWindow(id: "tutorials")
+                } label: {
+                    Label("Tutorials", systemImage: "list.bullet.rectangle")
+                }
+
+                Button {
+                    openWindow(id: "support")
+                } label: {
+                    Label("Support & Feedback", systemImage: "heart.text.square.fill")
+                }
+
+                Button {
+                    controller.openSupportPage()
+                } label: {
+                    Label("Donate on Ko-fi", systemImage: "cup.and.saucer.fill")
+                }
+
+                Button {
+                    controller.hideToTopBar()
+                } label: {
+                    Label("Hide to Top Bar", systemImage: "menubar.rectangle")
+                }
+            }
         }
     }
 

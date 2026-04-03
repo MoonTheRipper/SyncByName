@@ -8,6 +8,7 @@ struct AppSettingsSnapshot: Codable {
     var caseSensitiveFilenames = false
     var ignoreHiddenFiles = true
     var preserveSourceFolders = true
+    var hasSeenWelcome = false
 }
 
 @MainActor

@@ -14,8 +14,10 @@ final class AppController: ObservableObject {
     @Published private(set) var plan: SyncPlan?
     @Published private(set) var statusMessage = "Select folders to start a filename-only scan."
     @Published private(set) var isBusy = false
+    @Published private(set) var shouldPresentInitialWelcome: Bool
 
     private let settingsStore: AppSettingsStore
+    private var hasSeenWelcome: Bool
 
     init(settingsStore: AppSettingsStore = AppSettingsStore()) {
         self.settingsStore = settingsStore
@@ -27,6 +29,8 @@ final class AppController: ObservableObject {
         caseSensitiveFilenames = snapshot.caseSensitiveFilenames
         ignoreHiddenFiles = snapshot.ignoreHiddenFiles
         preserveSourceFolders = snapshot.preserveSourceFolders
+        hasSeenWelcome = snapshot.hasSeenWelcome
+        shouldPresentInitialWelcome = !snapshot.hasSeenWelcome
     }
 
     func addSourceRoots() {
@@ -158,6 +162,54 @@ final class AppController: ObservableObject {
         persist()
     }
 
+    func consumeInitialWelcomeRequest() -> Bool {
+        guard shouldPresentInitialWelcome else {
+            return false
+        }
+
+        shouldPresentInitialWelcome = false
+        return true
+    }
+
+    func markWelcomeSeen() {
+        guard !hasSeenWelcome else {
+            return
+        }
+
+        hasSeenWelcome = true
+        persist()
+    }
+
+    func resetWelcomeState() {
+        hasSeenWelcome = false
+        shouldPresentInitialWelcome = true
+        persist()
+    }
+
+    func openSupportPage() {
+        NSWorkspace.shared.open(SyncByNameIdentity.supportURL)
+    }
+
+    func openRepository() {
+        NSWorkspace.shared.open(SyncByNameIdentity.repository.repositoryURL)
+    }
+
+    func openFeedbackPage() {
+        NSWorkspace.shared.open(SyncByNameIdentity.repository.issuesURL)
+    }
+
+    func hideToTopBar() {
+        NSApp.hide(nil)
+    }
+
+    func activateApp() {
+        NSApp.activate(ignoringOtherApps: true)
+    }
+
+    func quitApp() {
+        NSApp.terminate(nil)
+    }
+
     private func pickFolders(allowsMultipleSelection: Bool = true) -> [URL] {
         let panel = NSOpenPanel()
         panel.canChooseDirectories = true
@@ -199,7 +251,8 @@ final class AppController: ObservableObject {
                 allowedExtensionsText: allowedExtensionsText,
                 caseSensitiveFilenames: caseSensitiveFilenames,
                 ignoreHiddenFiles: ignoreHiddenFiles,
-                preserveSourceFolders: preserveSourceFolders
+                preserveSourceFolders: preserveSourceFolders,
+                hasSeenWelcome: hasSeenWelcome
             )
         )
     }

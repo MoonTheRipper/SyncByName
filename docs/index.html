@@ -5,20 +5,61 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Sync by Name</title>
   <meta name="description" content="Preview-first filename-only compare and copy for macOS.">
+  <link rel="icon" type="image/svg+xml" href="assets/syncbyname-icon.svg">
   <link rel="stylesheet" href="styles.css">
   <link rel="manifest" href="site.webmanifest">
 </head>
 <body>
   <main class="page">
+    <header class="masthead">
+      <a class="brand" href=".">
+        <img src="assets/syncbyname-icon.svg" alt="Sync by Name icon" class="brand-icon">
+        <span>Sync by Name</span>
+      </a>
+
+      <div class="masthead-actions">
+        <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle color theme">
+          <span class="theme-toggle-sun">Light</span>
+          <span class="theme-toggle-moon">Dark</span>
+        </button>
+      </div>
+    </header>
+
     <section class="hero">
       <p class="eyebrow">macOS Utility</p>
       <h1>Sync by Name</h1>
       <p class="lede">
         Compare folders and drives by filename only, preview what is missing, then copy only those files.
       </p>
-      <div class="hero-actions">
-        <a id="primary-download" class="button button-primary" href="#">Latest Release</a>
-        <a class="button button-secondary" href="https://github.com/MoonTheRipper/SyncByName">View Source</a>
+      <div class="download-grid">
+        <a id="download-zip" class="button button-primary download-button" href="#">
+          <span class="button-icon" aria-hidden="true">↓</span>
+          <span>
+            <strong>ZIP</strong>
+            <small>macOS app archive</small>
+          </span>
+        </a>
+        <a id="download-dmg" class="button button-secondary download-button" href="#">
+          <span class="button-icon" aria-hidden="true">◫</span>
+          <span>
+            <strong>DMG</strong>
+            <small>disk image installer</small>
+          </span>
+        </a>
+        <a id="download-source" class="button button-secondary download-button" href="#">
+          <span class="button-icon" aria-hidden="true">{} </span>
+          <span>
+            <strong>Source</strong>
+            <small>tag archive</small>
+          </span>
+        </a>
+        <a class="button button-support download-button" href="https://ko-fi.com/I2I61WTJ6V" target="_blank" rel="noreferrer">
+          <span class="button-icon" aria-hidden="true">☕</span>
+          <span>
+            <strong>Support</strong>
+            <small>Donate on Ko-fi</small>
+          </span>
+        </a>
       </div>
       <p id="release-status" class="meta">Loading latest release…</p>
     </section>
@@ -54,11 +95,39 @@
       </article>
     </section>
 
+    <section class="grid grid-wide">
+      <article class="card">
+        <h2>Quick Tutorial</h2>
+        <ol class="steps">
+          <li>Add one or more source folders or drives.</li>
+          <li>Add the comparison folders that represent files you already have.</li>
+          <li>Optionally narrow the scan with extensions like <code>mp4, mov, mxf</code>.</li>
+          <li>Run the preview, inspect the missing filenames, then copy into an output folder.</li>
+        </ol>
+      </article>
+
+      <article class="card">
+        <h2>Support & Feedback</h2>
+        <p>Support development on Ko-fi or send workflow feedback through GitHub issues.</p>
+        <div class="support-links">
+          <a class="inline-link" href="https://ko-fi.com/I2I61WTJ6V" target="_blank" rel="noreferrer">Donate on Ko-fi</a>
+          <a class="inline-link" href="https://github.com/MoonTheRipper/SyncByName/issues" target="_blank" rel="noreferrer">Open issues</a>
+        </div>
+        <div id="kofi-widget" class="kofi-widget">
+          <script type="text/javascript" src="https://storage.ko-fi.com/cdn/widget/Widget_2.js"></script>
+          <script type="text/javascript">
+            kofiwidget2.init('Support me on Ko-fi', '#223047', 'I2I61WTJ6V');
+            kofiwidget2.draw();
+          </script>
+        </div>
+      </article>
+    </section>
+
     <section class="card">
       <h2>Build From Source</h2>
-      <pre><code>./Scripts/build.sh
-./Scripts/test.sh
-./Scripts/package-release.sh</code></pre>
+      <pre><code>zsh Scripts/build.sh
+zsh Scripts/test.sh
+zsh Scripts/package-release.sh</code></pre>
     </section>
   </main>
   <script src="site.js"></script>
