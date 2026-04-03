@@ -15,9 +15,12 @@ SWIFTPM_CACHE="$TMP_BASE/swiftpm-cache"
 APP_STAGING="$TMP_BASE/SyncByName.app"
 CONTENTS_DIR="$APP_STAGING/Contents"
 MACOS_DIR="$CONTENTS_DIR/MacOS"
+RESOURCES_DIR="$CONTENTS_DIR/Resources"
 OUTPUT_DIR="$ROOT_DIR/Artifacts/releases"
 ZIP_PATH="$OUTPUT_DIR/SyncByName-${VERSION}-macOS-arm64.zip"
 DMG_PATH="$OUTPUT_DIR/SyncByName-${VERSION}-macOS-arm64.dmg"
+ICON_SOURCE="$ROOT_DIR/Sources/SyncByNameApp/Resources/ScanByName.png"
+ICONSET_DIR="$TMP_BASE/AppIcon.iconset"
 BUILD_ARGS=(
   -c release
   --disable-sandbox
@@ -31,7 +34,7 @@ BUILD_ARGS=(
   -Xcc "-fdebug-prefix-map=${ROOT_DIR}=${SANITIZED_PREFIX}"
 )
 
-mkdir -p "$BUILD_HOME" "$MODULE_CACHE" "$SWIFTPM_CACHE" "$MACOS_DIR" "$OUTPUT_DIR"
+mkdir -p "$BUILD_HOME" "$MODULE_CACHE" "$SWIFTPM_CACHE" "$MACOS_DIR" "$RESOURCES_DIR" "$OUTPUT_DIR"
 
 export HOME="$BUILD_HOME"
 export CLANG_MODULE_CACHE_PATH="$MODULE_CACHE"
@@ -56,8 +59,22 @@ if [[ ! -x "$EXECUTABLE_PATH" ]]; then
   exit 1
 fi
 
+if [[ ! -f "$ICON_SOURCE" ]]; then
+  echo "Missing icon source at $ICON_SOURCE" >&2
+  exit 1
+fi
+
 cp "$EXECUTABLE_PATH" "$MACOS_DIR/SyncByName"
+cp "$ICON_SOURCE" "$RESOURCES_DIR/ScanByName.png"
 strip -S -x "$MACOS_DIR/SyncByName"
+
+mkdir -p "$ICONSET_DIR"
+for size in 16 32 128 256 512; do
+  sips -z "$size" "$size" "$ICON_SOURCE" --out "$ICONSET_DIR/icon_${size}x${size}.png" >/dev/null
+  double_size=$((size * 2))
+  sips -z "$double_size" "$double_size" "$ICON_SOURCE" --out "$ICONSET_DIR/icon_${size}x${size}@2x.png" >/dev/null
+done
+iconutil -c icns "$ICONSET_DIR" -o "$RESOURCES_DIR/AppIcon.icns"
 
 cat > "$CONTENTS_DIR/Info.plist" <<EOF
 <?xml version="1.0" encoding="UTF-8"?>
@@ -70,6 +87,8 @@ cat > "$CONTENTS_DIR/Info.plist" <<EOF
   <string>Sync by Name</string>
   <key>CFBundleExecutable</key>
   <string>SyncByName</string>
+  <key>CFBundleIconFile</key>
+  <string>AppIcon</string>
   <key>CFBundleIdentifier</key>
   <string>com.moontheripper.SyncByName</string>
   <key>CFBundleInfoDictionaryVersion</key>

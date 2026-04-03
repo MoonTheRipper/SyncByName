@@ -20,7 +20,10 @@ let package = Package(
         .executableTarget(
             name: "SyncByNameApp",
             dependencies: ["SyncByNameCore"],
-            path: "Sources/SyncByNameApp"
+            path: "Sources/SyncByNameApp",
+            resources: [
+                .process("Resources")
+            ]
         ),
         .target(
             name: "SyncByNameCore",

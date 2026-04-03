@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.1
+
+- replaced the generated icon with the real `ScanByName.png` asset across the app and docs
+- retuned the docs color system to match the icon's blue-steel palette
+- refreshed the welcome window colors to match the new icon treatment
+- generated and bundled a packaged app icon from the PNG during release builds
+
 ## 0.2.0
 
 - added a one-time welcome window with quick-start guidance

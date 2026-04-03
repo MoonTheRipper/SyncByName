@@ -32,7 +32,7 @@ public enum SyncByNameIdentity {
     public static let bundleIdentifier = "com.moontheripper.SyncByName"
     public static let repository = GitHubRepository(owner: "MoonTheRipper", name: "SyncByName")
     public static let supportURL = URL(string: "https://ko-fi.com/I2I61WTJ6V")!
-    public static let defaultVersion = "0.2.0"
+    public static let defaultVersion = "0.2.1"
 }
 
 public enum AppRuntimeInfo {

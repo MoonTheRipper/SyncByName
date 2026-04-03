@@ -3,13 +3,13 @@
   "short_name": "SyncByName",
   "start_url": "/SyncByName/",
   "display": "standalone",
-  "background_color": "#f4efe5",
-  "theme_color": "#223047",
+  "background_color": "#e9f0f8",
+  "theme_color": "#103050",
   "icons": [
     {
-      "src": "/SyncByName/assets/syncbyname-icon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml"
+      "src": "/SyncByName/assets/ScanByName.png",
+      "sizes": "1024x1024",
+      "type": "image/png"
     }
   ]
 }

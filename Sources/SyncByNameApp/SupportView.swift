@@ -67,7 +67,11 @@ private struct SupportCard<Content: View>: View {
         .padding(20)
         .background(
             RoundedRectangle(cornerRadius: 22, style: .continuous)
-                .fill(BrandPalette.parchment.opacity(0.55))
+                .fill(BrandPalette.blueMist.opacity(0.14))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 22, style: .continuous)
+                        .stroke(BrandPalette.deepOcean.opacity(0.12), lineWidth: 1)
+                )
         )
     }
 }
