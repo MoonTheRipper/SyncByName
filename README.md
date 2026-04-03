@@ -59,4 +59,4 @@ DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer \
 zsh Scripts/package-release.sh
 ```
 
-This creates ZIP and DMG artifacts in `docs/downloads/`.
+This creates ZIP and DMG artifacts in `Artifacts/releases/` and the website downloads resolve from GitHub Releases, not from the docs folder.

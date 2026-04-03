@@ -1,5 +1,4 @@
 const repository = "MoonTheRipper/SyncByName";
-const fallbackVersion = "0.2.0";
 const storageKey = "syncbyname.theme";
 
 const releaseStatus = document.getElementById("release-status");
@@ -22,10 +21,11 @@ function initialTheme() {
 }
 
 function setFallback() {
-  zipDownload.href = `downloads/SyncByName-${fallbackVersion}-macOS-arm64.zip`;
-  dmgDownload.href = `downloads/SyncByName-${fallbackVersion}-macOS-arm64.dmg`;
-  sourceDownload.href = `https://github.com/${repository}/archive/refs/tags/v${fallbackVersion}.zip`;
-  releaseStatus.textContent = `Latest release API unavailable. Falling back to local ${fallbackVersion} assets.`;
+  const releasesPage = `https://github.com/${repository}/releases/latest`;
+  zipDownload.href = releasesPage;
+  dmgDownload.href = releasesPage;
+  sourceDownload.href = `https://github.com/${repository}/archive/refs/heads/main.zip`;
+  releaseStatus.textContent = "Latest release API unavailable. Falling back to GitHub Releases.";
 }
 
 applyTheme(initialTheme());

@@ -23,5 +23,5 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            docs/downloads/*.zip
-            docs/downloads/*.dmg
+            Artifacts/releases/*.zip
+            Artifacts/releases/*.dmg
