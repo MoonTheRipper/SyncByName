@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sync by Name</title>
+  <meta name="description" content="Preview-first filename-only compare and copy for macOS.">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="manifest" href="site.webmanifest">
+</head>
+<body>
+  <main class="page">
+    <section class="hero">
+      <p class="eyebrow">macOS Utility</p>
+      <h1>Sync by Name</h1>
+      <p class="lede">
+        Compare folders and drives by filename only, preview what is missing, then copy only those files.
+      </p>
+      <div class="hero-actions">
+        <a id="primary-download" class="button button-primary" href="#">Latest Release</a>
+        <a class="button button-secondary" href="https://github.com/MoonTheRipper/SyncByName">View Source</a>
+      </div>
+      <p id="release-status" class="meta">Loading latest release…</p>
+    </section>
+
+    <section class="grid">
+      <article class="card">
+        <h2>What It Does</h2>
+        <ul>
+          <li>Scans multiple source roots recursively.</li>
+          <li>Checks comparison roots by filename only.</li>
+          <li>Filters by extensions like <code>mp4</code>, <code>mov</code>, and <code>mxf</code>.</li>
+          <li>Previews missing files before any copy begins.</li>
+          <li>Copies into an output folder without overwriting existing files.</li>
+        </ul>
+      </article>
+
+      <article class="card">
+        <h2>Why It Exists</h2>
+        <p>
+          Most sync tools care about path structure, timestamps, or mirroring. Sync by Name is for the narrower job:
+          find filenames that do not exist anywhere in the comparison set and collect them safely.
+        </p>
+      </article>
+
+      <article class="card">
+        <h2>Behavior</h2>
+        <ul>
+          <li>One-way workflow only.</li>
+          <li>No deletes, moves, or destructive sync.</li>
+          <li>No overwrite by default.</li>
+          <li>Optional source-root preservation to avoid collisions.</li>
+        </ul>
+      </article>
+    </section>
+
+    <section class="card">
+      <h2>Build From Source</h2>
+      <pre><code>./Scripts/build.sh
+./Scripts/test.sh
+./Scripts/package-release.sh</code></pre>
+    </section>
+  </main>
+  <script src="site.js"></script>
+</body>
+</html>

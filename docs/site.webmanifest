@@ -1,0 +1,9 @@
+{
+  "name": "Sync by Name",
+  "short_name": "SyncByName",
+  "start_url": "/SyncByName/",
+  "display": "standalone",
+  "background_color": "#f3f0e8",
+  "theme_color": "#1d6b47",
+  "icons": []
+}
